@@ -25,8 +25,10 @@ public class CreditCardTest {
     @DisplayName("Снятие уменьшает баланс и увеличивает задолженность с учётом процента")
     void withdrawReducesBalanceAndIncreasesDebtWithInterest() {
         creditCard.withdraw(10000);
-        assertEquals(140000, creditCard.getBalance());
-        assertEquals(11000, creditCard.getDebt());
+        assertAll(
+                () -> assertEquals(140000, creditCard.getBalance()),
+                () -> assertEquals(11000, creditCard.getDebt())
+        );
     }
 
     @Test
@@ -34,8 +36,10 @@ public class CreditCardTest {
     void multipleWithdrawalsAccumulateCorrectDebt() {
         creditCard.withdraw(5000);
         creditCard.withdraw(2000);
-        assertEquals(143000, creditCard.getBalance());
-        assertEquals(7700, creditCard.getDebt());
+        assertAll(
+                () -> assertEquals(143000, creditCard.getBalance()),
+                () -> assertEquals(7700, creditCard.getDebt())
+        );
     }
 
     @Test
@@ -43,8 +47,10 @@ public class CreditCardTest {
     void depositReducesDebtAndIncreasesBalance() {
         creditCard.withdraw(10000);
         creditCard.deposit(5000);
-        assertEquals(144000, creditCard.getBalance(), 0.01);
-        assertEquals(6000, creditCard.getDebt(), 0.01);
+        assertAll(
+                () -> assertEquals(144000, creditCard.getBalance(), 0.01),
+                () -> assertEquals(6000, creditCard.getDebt(), 0.01)
+        );
     }
 
 
@@ -53,8 +59,10 @@ public class CreditCardTest {
     void depositFullAmountClearsDebt() {
         creditCard.withdraw(10000);
         creditCard.deposit(11000);
-        assertEquals(150000, creditCard.getBalance());
-        assertEquals(0, creditCard.getDebt());
+        assertAll(
+                () -> assertEquals(150000, creditCard.getBalance()),
+                () -> assertEquals(0, creditCard.getDebt())
+        );
     }
 
     @Test
@@ -87,8 +95,10 @@ public class CreditCardTest {
     @DisplayName("Пополнение без долгов не увеличивает задолжность")
     void depositWithoutDebtDoesNothing() {
         creditCard.deposit(1000);
-        assertEquals(151000, creditCard.getBalance());
-        assertEquals(0, creditCard.getDebt());
+        assertAll(
+                () -> assertEquals(151000, creditCard.getBalance()),
+                () -> assertEquals(0, creditCard.getDebt())
+        );
     }
 
     @Test
@@ -136,7 +146,7 @@ public class CreditCardTest {
 
     @Test
     @DisplayName("Нельзя создать кредитную карту с отрицательным начальным балансом")
-    void shouldThrowExceptionWhenCreatingCardWithNegativeInitialBalance(){
+    void shouldThrowExceptionWhenCreatingCardWithNegativeInitialBalance() {
         Exception e = assertThrows(IllegalArgumentException.class,
                 () -> new CreditCard(TestConstants.CREDIT_CARD_NAME,
                         TestConstants.CURRENCY_RUB,
@@ -144,6 +154,7 @@ public class CreditCardTest {
                         10));
         assertEquals(ErrorMessages.NEGATIVE_BALANCE, e.getMessage());
     }
+
     @Test
     @DisplayName("Пополнение на сумму меньше процентного долга уменьшает только процентный долг, но не влияет на баланс")
     void depositLessThanInterestDebtShouldReduceOnlyInterestDebt() {
